@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{fragments/layout-admin :: layout (~{::main}, 'blog')}">
+<head>
+    <title>List of Blogs</title>
+</head>
+<body>
+<main role="main" class="pb-3">
+    <div class="card">
+        <div class="card-header">
+            <i class="fa fa-bars"></i>
+            <span th:text="#{blogs.title}"></span>
+            <a th:href="@{/admin/blogs/create}" class="btn btn-primary btn-sm float-right" role="button"><i
+                    class="fa fa-plus"></i> Add
+                New</a>
+        </div>
+        <div class="card-body">
+            <div th:if="${globalMessage}" th:text="${globalMessage}"></div>
+            <div class="clearfix">
+                <label>Show <select name="example_length">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select> entries</label>
+                <form class="form-inline float-right" th:action="@{/admin/blogs/search}" method="get"
+                      onsubmit="findByTitleContains(this.s.value); return false;">
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="s" class="sr-only">Name</label>
+                        <input type="text" id="s" name="s" class="form-control"
+                               th:value="${txtSearch.isPresent()} ? ${txtSearch.get()}"
+                               placeholder="Enter Name">
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Active</th>
+                    <th scope="col">Created</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="blogList" th:unless="${#lists.isEmpty(blogs)}">
+                <tr th:each="blog : ${blogs}">
+                    <th scope="row" th:text="${blog.id}"></th>
+                    <td><img th:src="@{${'/admin/blogs/files/' + blog.imageURL}}" width="85px"
+                             class="img-fluid img-thumbnail"></td>
+                    <td th:text="${blog.title}"></td>
+                    <td th:text="${blog.category.name}"></td>
+                    <td>
+                        <span th:class="${blog.active} ? 'badge badge-success' : 'badge badge-danger'"
+                              th:text="${blog.active} ? 'Enabled' : 'Disabled'"></span>
+                    </td>
+                    <td th:text="${{blog.createdAt}}"></td>
+                    <td>
+                        <a th:href="@{/admin/blogs/edit/{id}(id=${blog.id})}" class="btn btn-success btn-sm">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button type="button" data-toggle="modal" data-target="#confirmModal"
+                                th:attr="data-whatever=${blog.id}" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="clearfix">
+                <span th:text="${'Showing ' + blogs.numberOfElements + ' to ' + blogs.pageable.pageSize + ' of ' + blogs.totalElements + ' entries'}"></span>
+                <nav aria-label="Page navigation" class="float-right">
+                    <ul class="pagination" id="pagination">
+                        <li class="page-item" th:if="${blogs.hasPrevious()}">
+                            <button type="button" class="page-link"
+                                    th:onclick="|loadPage(${blogs.pageable.pageNumber - 1})|">
+                                Previous
+                            </button>
+                        </li>
+                        <li class="page-item" th:if="${blogs.hasNext()}">
+                            <button type="button" class="page-link"
+                                    th:onclick="|loadPage(${blogs.pageable.pageNumber + 1}, ${blogs.pageable.pageSize}, 'id')|">
+                                Next
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div><!-- /.card-body -->
+    </div><!-- /.card -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="#" th:action="@{/admin/blogs/delete}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel">Please confirm</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this item?</p>
+                        <input type="hidden" name="id" id="id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" id="btnConfirm" class="btn btn-primary">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#confirmModal').on('show.bs.modal', function (event) {
+            let button = $(event.relatedTarget); // Button that triggered the modal
+            let recipient = button.data('whatever'); // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            let modal = $(this);
+            modal.find('.modal-body input').val(recipient)
+        });
+
+        function findByTitleContains(searchKey) {
+            $.ajax({
+                type: 'GET',
+                url: '/admin/blogs/search?s=' + searchKey,
+                dataType: "json",
+                success: renderList
+            });
+        }
+
+        function loadPage(page, pageSize, sortBy) {
+            $.ajax({
+                type: 'GET',
+                url: '/admin/blogs/search?pageNo=' + page + '&pageSize=' + pageSize + '&sortBy=' + sortBy,
+                dataType: "json",
+                success: renderList
+            });
+        }
+
+        function renderList(data) {
+            let list = data == null ? [] : (data.content instanceof Array ? data.content : [data.content]);
+            $('#blogList tr').remove();
+            if (list.length > 0) {
+                $.each(list, function (index, blog) {
+                    let data = `<tr>
+                    <th scope="row">${blog.id}</th>
+                    <td><img src="${'/admin/blogs/files/' + blog.imageURL}" width="85px"
+                             class="img-fluid img-thumbnail"></td>
+                    <td>${blog.title}</td>
+                    <td>${blog.category.name}</td>
+                    <td>
+                        <span class="${blog.active ? 'badge badge-success' : 'badge badge-danger'}">${blog.active ? 'Enabled' : 'Disabled'}</span>
+                    </td>
+                    <td>
+                        <a href="/admin/blogs/edit/${blog.id}" class="btn btn-success btn-sm">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button type="button" data-toggle="modal" data-target="#confirmModal"
+                                data-whatever="${blog.id}" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+        </tr>`;
+                    $('#blogList').append(data);
+                });
+            } else {
+                $("#blogList").html("<tr><td colspan='6'>No data.</td></tr>");
+            }
+            if (data.totalPages > 1) {
+                console.log(data);
+                let prev = "";
+                let next = "";
+                if (!data.first) {
+                    prev = '<button class="page-link" id="prev" type="button" onclick="loadPage(' + (data.pageable.pageNumber - 1) + ',' + data.pageable.pageSize + ', \'id\')">Prev</button>';
+                }
+                if (!data.last) {
+                    next = '<button class="page-link" id="next" type="button" onclick="loadPage(' + (data.pageable.pageNumber + 1) + ',' + data.pageable.pageSize + ', \'id\')">Next</button>';
+                }
+                $("#pagination").html(prev + next);
+            }
+        }
+    </script>
+</main><!-- /.main -->
+</body>
+</html>

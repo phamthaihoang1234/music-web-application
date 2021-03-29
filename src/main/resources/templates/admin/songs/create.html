@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{fragments/layout-admin :: layout (~{::main}, ${title})}">
+<head>
+    <title>Admin-Song Create</title>
+</head>
+<body>
+<main role="main" class="pb-3">
+    <div class="row">
+        <div class="col-md-3" th:replace="~{fragments/layout-nav :: admin}"></div>
+        <div class="col-md-9">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin" th:text="#{title.dashboard}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/admin/songs" th:text="#{title.songs}">Song</a>
+                    </li>
+                </ol>
+            </nav>
+            <div class="card">
+                <div class="card-header">
+                    <span th:text="${title}"></span>
+                    <a href="/admin/songs" class="btn btn-secondary btn-sm float-right" th:text="#{button.index}">Back</a>
+                </div>
+                <div class="card-body">
+                    <th:block th:if="${message}" th:utext="${message}"></th:block>
+                    <div class="alert alert-danger" th:if="${#fields.hasErrors('${song.*}')}">
+                        <ul>
+                            <li th:each="err : ${#fields.errors('${song.*}')}" th:text="${err}">Input is incorrect
+                            </li>
+                        </ul>
+                    </div>
+                    <form action="#" th:action="@{/admin/songs/save}" th:object="${song}" method="post" enctype="multipart/form-data">
+                        <div class="row form-group">
+                            <label class="col-form-label col-md-2">Song Name <span
+                                    class="text-danger">*</span>:</label>
+                            <div class="col-md-10">
+                                <input type="text" th:field="*{name}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('name')}? 'is-invalid'">
+                                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback">Song Name
+                                    Error</p>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-form-label col-md-2">Singers <span
+                                    class="text-danger">*</span>:</label>
+                            <div class="col-md-10">
+                                <select th:field="*{singer}" class="form-control">
+                                    <option th:each="singer : ${singers}" th:value="${singer.id}" th:text="${singer.name}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-form-label col-md-2">Albums <span
+                                    class="text-danger">*</span>:</label>
+                            <div class="col-md-10">
+                                <select th:field="*{albums}" class="form-control">
+                                    <option th:each="album : ${albums}" th:value="${album.id}" th:text="${album.name}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-form-label col-md-2">Image <span
+                                    class="text-danger">*</span>:</label>
+                            <div class="col-md-10">
+                                <input type="file" th:field="*{imageData}" class="form-control">
+                                <p th:if="${#fields.hasErrors('imageData')}" th:errors="*{imageData}" class="invalid-feedback">Image
+                                    Error</p>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-form-label col-md-2">Lyric <span
+                                    class="text-danger">*</span>:</label>
+                            <div class="col-md-10">
+                        <textarea th:field="*{lyric}" class="form-control"
+                                  th:classappend="${#fields.hasErrors('lyric')}? 'is-invalid'" cols="30" rows="10"></textarea>
+                                <p th:if="${#fields.hasErrors('lyric')}" th:errors="*{lyric}" class="invalid-feedback">Song lyric
+                                    Error</p>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-form-label col-md-2">Url <span
+                                    class="text-danger">*</span>:</label>
+                            <div class="col-md-10">
+                                <input type="file" th:field="*{mp3Data}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('mp3Data')}? 'is-invalid'">
+                                <p th:if="${#fields.hasErrors('mp3Data')}" th:errors="*{mp3Data}" class="invalid-feedback">Url
+                                    Error</p>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-form-label col-md-2">Status <span
+                                    class="text-danger">*</span>:</label>
+                            <div class="col-md-10">
+                                <select th:field="*{status}" class="form-control">
+                                    <option th:value="1" selected>Enabled</option>
+                                    <option th:value="0">Disabled</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-10 offset-2">
+                                <button type="submit" class="btn btn-primary" th:text="#{button.create}">Create</button>
+                                <a href="/admin/songs" class="btn btn-link" th:text="#{button.cancel}">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div><!-- /.card-body -->
+            </div><!-- /.card -->
+        </div><!-- /.col-md-9 -->
+    </div><!-- /.row -->
+</main>
+<!-- /.main -->
+</body>
+</html>

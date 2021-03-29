@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="col-md-3" th:fragment="admin">
+    <div class="card mb-2">
+        <div class="card-body p-0">
+            <div class="media p-3">
+                <img src="/assets/images/avatar.jpeg" width="90" class="mr-3" alt="Avatar">
+                <div class="media-body">
+                    <h5 class="mt-0 mb-1">Admin</h5>
+                    <a href="/user/profile">
+                        <i class="fas fa-user-circle"></i> <span th:text="#{profile}"></span>
+                    </a><br>
+                    <a href="/user/logout">
+                        <i class="fas fa-sign-out-alt"></i>&nbsp;<span th:text="#{logout}"></span>
+                    </a>
+                </div>
+            </div>
+        </div><!-- /.card-body -->
+    </div><!-- /.card -->
+    <div class="card">
+        <div class="card-body">
+            <div class="list-group list-group-flush">
+                <a href="/admin/categories" class="list-group-item list-group-item-action"
+                   th:classappend="${title == 'Categories' ? 'active' : ''}"
+                   th:text="#{title.categories}">Categories</a>
+                <a href="/admin/blogs" class="list-group-item list-group-item-action"
+                   th:classappend="${title == 'Blogs' ? 'active' : ''}"
+                   th:text="#{title.blogs}">Blogs</a>
+                <a href="/admin/albums" class="list-group-item list-group-item-action"
+                   th:classappend="${title == 'Albums' ? 'active' : ''}" th:text="#{title.albums}">Albums</a>
+                <a href="/admin/singers" class="list-group-item list-group-item-action"
+                   th:classappend="${title == 'Singers' ? 'active' : ''}" th:text="#{title.singers}">Singers</a>
+                <a href="/admin/songs" class="list-group-item list-group-item-action"
+                   th:classappend="${title == 'Songs' ? 'active' : ''}"
+                   th:text="#{title.songs}">Songs</a>
+            </div>
+        </div><!-- /.card-body -->
+    </div><!-- /.card -->
+</div><!-- /.col-md-3 -->
+<nav aria-label="breadcrumb" th:fragment="breadcrumb(pageURL, pageName)">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+        <li class="breadcrumb-item"><a th:href="${pageURL}" th:text="${pageName}">Categories</a></li>
+    </ol>
+</nav>
+<!-- Menu Left -->
+<div class="col-md-3 d-none d-md-block" th:fragment="menuLeft">
+    <div class="card mb-2">
+        <div class="card-header font-weight-bold bg-dark text-white">
+            Album
+        </div>
+        <div class="card-body p-0">
+            <div class="list-group list-group-flush" th:each="album : ${albums}">
+                <a th:href="@{/album/{id}(id=${album.id})}" class="list-group-item list-group-item-action"
+                   th:text="${album.name}"></a>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-2">
+        <div class="card-header font-weight-bold bg-dark text-white">
+            Singer
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="media border-bottom py-2 d-flex align-items-center" th:each="singer : ${singers}">
+                    <a th:href="@{/singer/{id}(id=${singer.id})}">
+                        <img th:src="'/files/' + ${singer.avatarURL}" class="mr-3 rounded" width="65" alt="...">
+                    </a>
+                    <div class="media-body">
+                        <h5><a class="mt-0 mb-1 font-weight-bold text-dark" th:href="@{/singer/{id}(id=${singer.id})}"
+                               th:text="${singer.name}"></a></h5>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- Bang Xep Hang -->
+<div class="col-md-3" th:fragment="bxh">
+    <div class="card">
+        <div class="card-header">
+            Bảng xếp hạng
+            <button th:onclick="|bxh(1)|" type="button" class="btn btn-light">US/UK</button>
+            <button th:onclick="|bxh(2)|" type="button" class="btn btn-success">Việt Nam</button>
+            <button th:onclick="|bxh(3)|" type="button" class="btn btn-light">Châu Á</button>
+        </div>
+        <div class="card-body" id="bxhList">
+            <ul class="list-unstyled" th:replace="fragments/loop-song :: loopBXH (${bxh})"></ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

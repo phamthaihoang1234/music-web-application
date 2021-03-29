@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{fragments/layout-admin :: layout (~{::main}, 'dashboard')}">
+<head>
+    <title>List of Categories</title>
+</head>
+<body>
+<main role="main" class="pb-3">
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb"
+                 th:replace="~{fragments/layout-nav :: breadcrumb('/admin/categories', 'Categories')}"/>
+            <div class="jumbotron text-center">
+                <a href="/" class="lang-logo">
+                    <img th:src="@{/assets/images/anhnbt-logo.png}" alt="AnhNBT Logo"
+                         class="rounded mx-auto d-block mb-3"
+                         width="300px">
+                </a>
+                <h1>DASHBOARD</h1>
+            </div>
+        </div>
+    </div><!-- /.row -->
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-primary">
+                            <i class="fas fa-music"></i> Songs
+                            <a href="/admin/songs" class="btn btn-light btn-sm float-right">View all <small
+                                    class="badge badge-danger" th:text="${countAlbums}">0</small></a>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info" th:if="${#lists.isEmpty(songs)}">
+                                No data.
+                            </div>
+                            <ul th:unless="${#lists.isEmpty(albums)}">
+                                <li th:each="song : ${songs}" th:text="${song.name}"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-info">
+                            <i class="fas fa-music"></i> Singers
+                            <a href="/admin/singers" class="btn btn-light btn-sm float-right">View all <small
+                                    class="badge badge-danger" th:text="${countAlbums}">0</small></a>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info" th:if="${#lists.isEmpty(singers)}">
+                                No data.
+                            </div>
+                            <ul th:unless="${#lists.isEmpty(albums)}" th:each="singer : ${singers}">
+                                <li th:each="song : ${songs}" th:text="${singer.name}"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-warning">
+                            <i class="fas fa-music"></i> Albums
+                            <a href="/admin/albums" class="btn btn-light btn-sm float-right">View all <small
+                                    class="badge badge-danger" th:text="${countAlbums}">0</small></a>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info" th:if="${#lists.isEmpty(albums)}">
+                                No data.
+                            </div>
+                            <table class="table table-bordered">
+                                <thead>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                </thead>
+                                <tbody>
+                                <tr th:each="album : ${albums}">
+                                    <td th:text="${album.id}"></td>
+                                    <td><img th:src="@{${'/files/' + album.imageURL}}" width="85px"
+                                             class="img-fluid img-thumbnail"></td>
+                                    <td th:text="${album.name}"></td>
+                                    <td>
+                                        <a th:href="@{/admin/albums/__${album.id}__ }" class="btn btn-secondary btn-sm">View</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main><!-- /.main -->
+</body>
+</html>

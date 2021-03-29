@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{/fragments/layout-web :: layout (~{::main}, 'songs')}">
+<head>
+    <title>List of Songs</title>
+</head>
+<body>
+<main role="main" class="pb-3">
+        <div class="col-md-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                </ol>
+            </nav>
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-bars"></i>
+                    <span th:text="#{title.songs.list}"></span>
+                    <a th:href="@{/user/songs/create}" class="btn btn-primary btn-sm float-right" role="button"
+                       th:utext="#{button.create}"><i
+                            class="fa fa-plus"></i> Add
+                        New</a>
+                </div>
+                <div class="card-body">
+<!--                    <div th:if="${globalMessage}" th:text="${globalMessage}"></div>-->
+<!--                    <div class="clearfix">-->
+<!--                        <label>Show <select name="pageSize" id="pageSize" th:switch="${songs.pageable.pageSize}">-->
+<!--                            <option value="10" th:selected="${songs.pageable.pageSize} == 10">10</option>-->
+<!--                            <option value="25" th:selected="${songs.pageable.pageSize} == 25">25</option>-->
+<!--                            <option value="50" th:selected="${songs.pageable.pageSize} == 50">50</option>-->
+<!--                            <option value="100" th:selected="${songs.pageable.pageSize} == 100">100</option>-->
+<!--                        </select> entries</label>-->
+<!--                    </div>-->
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Singer</th>
+                            <th>Album</th>
+                            <th>Status</th>
+                            <th>Create</th>
+                        </tr>
+                        </thead>
+                        <tbody id="blogList" th:unless="${#lists.isEmpty(songs)}">
+                        <tr th:each="song : ${songs}">
+                            <th scope="row" th:text="${song.id}"></th>
+                            <td><img th:src="@{${'/files/' + song.image}}" width="85px"
+                                     class="img-fluid img-thumbnail"></td>
+                            <td th:text="${song.name}"></td>
+                            <td th:utext="${song.singer.name}"></td>
+                            <td>
+                                <th:block th:each="album : ${song.albums}">
+                                    <small th:text="${album.name}" class="badge badge-dark"></small>
+                                </th:block>
+                            </td>
+                            <td th:text="${song.status} ? #{true} : #{false}" th:class="${song.status} ? 'text-success' : 'text-danger'"></td>
+                            <td th:text="${{song.create_at}}"></td>
+                            <td>
+                                <a th:href="@{/admin/songs/edit/{id}(id=${song.id})}" class="btn btn-success btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" data-toggle="modal" data-target="#confirmModal"
+                                        th:attr="data-whatever=${song.id}" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+<!--                    <div>-->
+<!--                        <a th:href="@{'/songs'(page=${songs.number - 1})}" th:if="${songs.hasPrevious()}">Previous</a>-->
+<!--                        <span th:text="${songs.number + 1}"></span>/<span th:text="${songs.totalPages}"></span>-->
+<!--                        <a th:href="@{'/songs'(page=${songs.number + 1})}" th:if="${songs.hasNext()}">Next</a>-->
+<!--                    </div>-->
+                </div><!-- /.card-body -->
+            </div><!-- /.card -->
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="#" th:action="@{/admin/songs/delete}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel">Please confirm</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this item?</p>
+                        <input type="hidden" name="id" id="id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" id="btnConfirm" class="btn btn-primary">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#confirmModal').on('show.bs.modal', function (event) {
+            let button = $(event.relatedTarget); // Button that triggered the modal
+            let recipient = button.data('whatever'); // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            let modal = $(this);
+            modal.find('.modal-body input').val(recipient)
+        });
+    </script>
+</main><!-- /.main -->
+</body>
+</html>

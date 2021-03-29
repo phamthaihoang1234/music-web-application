@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{fragments/layout-admin :: layout (~{::main}, 'Add New Album')}">
+<head>
+    <title>Add New Album :: AnhNBT</title>
+</head>
+<body>
+<main role="main" class="pb-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="/admin/albums">Albums</a></li>
+        </ol>
+    </nav>
+    <div class="card">
+        <div class="card-header">
+            <span>Add New Album</span>
+            <a href="/admin/albums" class="btn btn-link btn-sm float-right">Back</a>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-success" th:if="${globalMessage}" th:text="${globalMessage}"></div>
+            <div th:if="${#fields.hasErrors('${album.*}')}" class="alert alert-danger">
+                <ul>
+                    <li th:each="err : ${#fields.errors('${album.*}')}" th:text="${err}">Input is incorrect</li>
+                </ul>
+            </div>
+            <form th:action="@{/admin/albums/save}" th:object="${album}" method="post" enctype="multipart/form-data">
+                <div class="row form-group">
+                    <label class="col-form-label col-md-2">Album Name <span
+                            class="text-danger">*</span>:</label>
+                    <div class="col-md-10">
+                        <input type="text" th:field="*{name}" class="form-control"
+                               th:classappend="${#fields.hasErrors('name')}? 'is-invalid'">
+                        <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback">Album Name
+                            Error</p>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-form-label col-md-2">Description <span
+                            class="text-danger">*</span>:</label>
+                    <div class="col-md-10">
+                        <textarea cols="50" rows="5" class="form-control" th:field="*{description}"
+                                  th:classappend="${#fields.hasErrors('description')}? 'is-invalid'"></textarea>
+                        <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="invalid-feedback">Description
+                            Error</p>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-form-label col-md-2">Image <span
+                            class="text-danger">*</span>:</label>
+                    <div class="col-md-10">
+                        <input type="file" th:field="*{imageData}" class="form-control">
+                        <p th:if="${#fields.hasErrors('imageData')}" th:errors="*{imageData}" class="invalid-feedback">Image
+                            Error</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <a href="/admin/albums" class="btn btn-link">Cancel</a>
+                </div>
+            </form>
+        </div><!-- /.card-body -->
+    </div><!-- /.card -->
+</main><!-- /.main -->
+</body>
+</html>

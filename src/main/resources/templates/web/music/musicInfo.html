@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{fragments/layout-web :: layout (~{::main}, 'home')}">
+<head>
+    <title>Please Log In</title>
+</head>
+<body>
+<main role="main" class="pb-3">
+    <div class="row">
+        <!--- menu left -->
+        <div class="col-md-3 d-none d-md-block">
+            <div class="card mb-2">
+                <div class="card-header text-white bg-secondary ">
+                    Thể loại âm nhạc
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush" th:each="category : ${categories}">
+                        <a th:href="@{/category/{id}(id=${category.id})}" class="list-group-item list-group-item-action"
+                           th:text="${category.name}"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header text-white bg-secondary">
+                    Album
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush" th:each="album : ${albums}">
+                        <a th:href="@{/album/{id}(id=${album.id})}" class="list-group-item list-group-item-action"
+                           th:text="${album.name}"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header text-white bg-secondary">
+                    Singer
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush" th:each="singer : ${singers}">
+                        <a th:href="@{/singer/{id}(id=${singer.id})}" class="list-group-item list-group-item-action"
+                           th:text="${singer.name}"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Moi cap nhat -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header clearfix">
+                    <h1 th:text="${song.name} + ' - ' + ${song.singer.name}" class="float-left display-4"></h1>
+                    <div class="float-right text-muted">
+                        <span th:utext="'<i class=\'fas fa-headphones\'></i> ' + ${song.views}"></span>
+                        <span th:utext="'<i class=\'far fa-clock\'></i> ' + ${song.createAt}"></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 clearfix mb-2">
+                            <audio controls class="float-left">
+                                <source th:src="'/files/' + ${song.url}" src="horse.ogg" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+
+                            <!-- Button Download nếu chưa đăng nhập -->
+                            <button type="button"
+                                    sec:authorize="isAnonymous()" th:title="#{label.login.required(${song.name})}"
+                                    class="btn btn-danger float-right"
+                                    data-toggle="modal"
+                                    data-target="#LoginModal"><i class="fas fa-download"></i> Download
+                            </button>
+                            <!-- Button Download nếu đã đăng nhập -->
+                            <a th:if="${#authorization.expression('isAuthenticated()')}"
+                               th:href="'/files/' + ${song.url}" class="btn btn-danger float-right"><i
+                                    class="fas fa-download"></i> Download</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img th:src="'/files/' + ${song.image}" class="mx-auto d-block img-fluid mb-2"
+                                 th:alt="${song.name}">
+                            <h5 class="mt-0 mb-1" th:text="${song.name}"></h5>
+                            <p><span th:text="'Ca sĩ:'"></span> <a th:href="@{/singer/{id}(id=${song.singer.id})}"
+                                                                   th:text="${song.singer.name}"></a></p>
+                        </div>
+                        <div class="col-md-8">
+                            <h2 class="bg-dark text-white p-2"><i class="fas fa-music"></i> Lyric</h2>
+                            <div th:utext="${song.lyric}"></div>
+                        </div>
+                    </div><!-- /.row -->
+                </div><!-- /.card-body -->
+            </div><!-- /.card -->
+
+            <div class="card">
+                <div class="card-header">Bài hát liên quan</div>
+                <div class="card-body">
+                    <div class="alert alert-info" th:if="${#lists.isEmpty(concerning_songs)}">Chưa có bài liên quan
+                        nào.
+                    </div>
+                    <ul class="list-unstyled" th:each="concerning_song:${concerning_songs}">
+                        <li class="media border-bottom py-2">
+                            <div class="position-relative">
+                                <a th:href="@{/music/{id}(id=${concerning_song.id})}">
+                                    <img th:src="'/files/' + ${concerning_song.image}" class="mr-3 rounded" width="85"
+                                         alt="...">
+                                </a>
+                                <img src="/assets/images/playing-s.gif" class="position-absolute"
+                                     style="bottom: 5px; left: 5px;" alt="Playing">
+                            </div>
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1" th:text="${concerning_song.name}"></h5>
+                                <small th:text="${concerning_song.singer.name}"></small>
+                            </div>
+                            <a th:href="@{/music/{id}(id=${concerning_song.id})}"
+                               class="px-2 py-1 mr-2 bg-success text-white" title="Play"><i class="fas fa-play"></i></a>
+                            <a href="#" class="px-2 py-1 bg-danger text-white" song-id="1" title="Thích"><i
+                                    class="far fa-heart"></i></a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <!-- BXH -->
+        <div class="col-md-3" th:replace="fragments/layout-nav :: bxh"></div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    Bảng xếp hạng
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons" id="btn-group">
+                        <button th:onclick="|bxh(1,this)|" type="button" class="btn btn-light active" data-toggle="button"
+                                aria-pressed="false">US/UK
+                        </button>
+                        <button th:onclick="|bxh(2,this)|" type="button" class="btn btn-light" data-toggle="button"
+                                aria-pressed="false">Việt Nam
+                        </button>
+                        <button th:onclick="|bxh(3,this)|" type="button" class="btn btn-light" data-toggle="button"
+                                aria-pressed="false">Châu Á
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled" th:each="song, rowStat :${bxh}">
+                        <li class="media border-bottom py-2">
+                            <div class="position-relative">
+                                <a th:href="@{/music/{id}(id=${song.id})}">
+                                    <img th:src="'/files/' + ${song.image}" class="mr-3 rounded" width="85" alt="...">
+                                </a>
+                                <small class="position-absolute badge badge-dark text-white"
+                                       style="bottom: 5px; left: 5px;"
+                                       th:utext="'<i class=\'fas fa-eye\'></i> ' + ${song.views}">
+                                </small>
+                            </div>
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1" th:text="${song.name}"></h5>
+                                <small th:text="${song.singer.name}"></small>
+                            </div>
+                            <div class="display-4 text-danger" th:text="${rowStat.count}"></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="#" th:action="@{/user/login}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="LoginModalLabel" th:utext="#{label.login.required('<strong class=\'text-danger\'>' + ${song.name} + '</strong>')}">Please Login</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="loginForm" action="#" th:action="@{/user/login}" method="post">
+                            <fieldset>
+                                <div class="form-group">
+                                    <label for="email" th:text="#{entities.user.email}">Email</label>
+                                    <input type="email" class="form-control" name="email" id="email"
+                                           placeholder="Your email" autofocus="autofocus" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password" th:text="#{entities.user.password}">Password</label>
+                                    <input type="password" class="form-control" name="password" id="password"
+                                           placeholder="Your Password" required>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label for="remember-me">
+                                        <input type="checkbox" name="remember-me" id="remember-me"> <span
+                                            th:text="#{form.label.saved}">Keep me logged in</span>
+                                    </label>
+                                    <div class="float-right">
+                                        <button type="submit" class="btn btn-primary btn-block"
+                                                th:text="#{form.button.login}">Sign in
+                                        </button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                        <p>Bạn chưa có tài khoản? <a th:href="@{/user/signup}" th:text="#{form.button.registration}">Sign up</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

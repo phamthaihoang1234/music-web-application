@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{fragments/layout-web :: layout (~{::main}, 'List of Categories')}">
+<head>
+    <title>List of Categories</title>
+</head>
+<body>
+<main role="main" class="pb-3">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header">
+                    <h1 th:text="#{title.categories.index}"></h1>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" th:if="${#lists.isEmpty(categories)}">No data.</div>
+                    <ul class="list-group list-group-flush" th:each="category : ${categories}">
+                        <a class="media border-bottom py-2" th:href="@{/category/details(id=${category.id})}" th:text="${category.name}"></a>
+                    </ul>
+                </div><!-- /.card-body -->
+            </div><!-- /.card -->
+        </div><!-- /.col-md-12 -->
+    </div><!-- /.row -->
+</main>
+</body>
+</html>

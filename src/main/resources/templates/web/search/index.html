@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{fragments/layout-web :: layout (~{::main}, 'Search')}">
+<head>
+    <title>Search</title>
+</head>
+<body>
+<main role="main" class="pb-3">
+    <div class="row">
+        <!--- menu left -->
+        <div class="col-md-3 d-none d-md-block">
+            <div class="card mb-2">
+                <div class="card-header font-weight-bold bg-dark text-white">
+                    Thể loại âm nhạc
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush" th:each="category : ${categories}">
+                        <a th:href="@{/category/{id}(id=${category.id})}" class="list-group-item list-group-item-action" th:text="${category.name}"></a>
+                    </div>
+                    <div class="alert alert-info mb-0" th:if="${#lists.isEmpty(categories)}">No data.</div>
+                </div>
+            </div>
+            <div class="card mb-2">
+                <div class="card-header font-weight-bold bg-dark text-white">
+                    Album
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush" th:each="album : ${albums}">
+                        <a th:href="@{/album/{id}(id=${album.id})}" class="list-group-item list-group-item-action" th:text="${album.name}"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-2">
+                <div class="card-header font-weight-bold bg-dark text-white">
+                    Singer
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush" th:each="singer : ${singers}">
+                        <a th:href="@{/singer/{id}(id=${singer.id})}" class="list-group-item list-group-item-action" th:text="${singer.name}"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Moi cap nhat -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header">
+                    Search
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" th:if="${title.isPresent()}" th:utext="'Từ khoá <strong class=\'text-danger\'>' + ${title.get()} + '</strong> có ' + ${songs.totalElements} + ' kết quả'"></div>
+                    <ul class="list-unstyled" th:replace="fragments/loop-song :: loop (${songs})"></ul>
+                </div>
+
+            </div>
+        </div>
+        <!-- BXH -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    Bảng xếp hạng
+                    <button th:onclick="|bxh(1)|" type="button" class="btn btn-light">US/UK</button>
+                    <button th:onclick="|bxh(2)|" type="button" class="btn btn-success">Việt Nam</button>
+                    <button th:onclick="|bxh(3)|" type="button" class="btn btn-light">Châu Á</button>
+                </div>
+                <div class="card-body" id="bxhList">
+                    <ul class="list-unstyled" th:replace="fragments/loop-song :: loopBXH (${bxh})"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

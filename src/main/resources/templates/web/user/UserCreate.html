@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{fragments/layout-web :: layout (~{::main}, 'songs')}">
+<head>
+    <title>Add New Song :: AnhNBT</title>
+</head>
+<body>
+<main role="main" class="pb-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="/user/songs">Songs</a></li>
+        </ol>
+    </nav>
+    <div class="card">
+        <div class="card-header">
+            <span>Add New Song</span>
+            <a href="/user/songs/create" class="btn btn-link btn-sm float-right"></a>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-success" th:if="${globalMessage}" th:text="${globalMessage}"></div>
+            <div th:if="${#fields.hasErrors('${song.*}')}" class="alert alert-danger">
+                <ul>
+                    <li th:each="err : ${#fields.errors('${song.*}')}" th:text="${err}">Input is incorrect</li>
+                </ul>
+            </div>
+            <form th:action="@{/user/songs/save}" th:object="${song}" method="post" enctype="multipart/form-data">
+                <div class="row form-group">
+                    <label class="col-form-label col-md-2">Song Name <span
+                            class="text-danger">*</span>:</label>
+                    <div class="col-md-10">
+                        <input type="text" th:field="*{name}" class="form-control"
+                               th:classappend="${#fields.hasErrors('name')}? 'is-invalid'">
+                        <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback">Song Name
+                            Error</p>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <label class="col-form-label col-md-2">Singers <span
+                            class="text-danger">*</span>:</label>
+                    <div class="col-md-10">
+                        <select th:field="*{singer}" class="form-control">
+                            <option th:each="singer : ${singers}" th:value="${singer.id}" th:text="${singer.name}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <label class="col-form-label col-md-2">Albums <span
+                            class="text-danger">*</span>:</label>
+                    <div class="col-md-10">
+                        <select th:field="*{albums}" class="form-control">
+                            <option th:each="album : ${albums}" th:value="${album.id}" th:text="${album.name}"></option>
+                        </select>
+                    </div>categories
+                </div>
+
+                <div class="row form-group">
+                    <label class="col-form-label col-md-2">Image <span
+                            class="text-danger">*</span>:</label>
+                    <div class="col-md-10">
+                        <input type="file" th:field="*{imageData}" class="form-control">
+                        <p th:if="${#fields.hasErrors('imageData')}" th:errors="*{imageData}" class="invalid-feedback">Image
+                            Error</p>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-form-label col-md-2">Lyric <span
+                            class="text-danger">*</span>:</label>
+                    <div class="col-md-10">
+                        <textarea th:field="*{lyric}" class="form-control"
+                                  th:classappend="${#fields.hasErrors('lyric')}? 'is-invalid'" cols="30" rows="10"></textarea>
+                        <p th:if="${#fields.hasErrors('lyric')}" th:errors="*{lyric}" class="invalid-feedback">Song lyric
+                            Error</p>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-form-label col-md-2">Url <span
+                            class="text-danger">*</span>:</label>
+                    <div class="col-md-10">
+                        <input type="file" th:field="*{mp3Data}" class="form-control"
+                               th:classappend="${#fields.hasErrors('mp3Data')}? 'is-invalid'">
+                        <p th:if="${#fields.hasErrors('mp3Data')}" th:errors="*{mp3Data}" class="invalid-feedback">Url
+                            Error</p>
+                    </div>
+                </div>
+<!--                <div class="row form-group">-->
+<!--                    <label class="col-form-label col-md-2">Status <span-->
+<!--                            class="text-danger">*</span>:</label>-->
+<!--                    <div class="col-md-10">-->
+<!--                        <select th:field="*{status}" class="form-control">-->
+<!--                            <option th:value="1" selected>Enabled</option>-->
+<!--                            <option th:value="0">Disabled</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="row form-group">-->
+<!--                    <label class="col-form-label col-md-2">Create at <span-->
+<!--                            class="text-danger">*</span>:</label>-->
+<!--                    <div class="col-md-10">-->
+<!--                        <input type="text" th:field ="*{create_at}" class="form-control"-->
+<!--                               th:classappend="${#fields.hasErrors('create_at')}? 'is-invalid'">-->
+<!--                        <p th:if="${#fields.hasErrors('create_at')}" th:errors="*{create_at}" class="invalid-feedback">Create Day-->
+<!--                            Error</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <a href="/user/songs" class="btn btn-link">Cancel</a>
+                </div>
+            </form>
+        </div><!-- /.card-body -->
+    </div><!-- /.card -->
+</main><!-- /.main -->
+</body>
+</html>

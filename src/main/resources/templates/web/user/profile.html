@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{fragments/layout-web :: layout (~{::main}, 'login')}">
+<head>
+    <title>Profile</title>
+</head>
+<body>
+<main role="main" class="pb-3">
+    <div class="row">
+    <div class="col-md-3">
+        <div class="card mb-2">
+            <div class="card-body p-0">
+                <div class="media p-3">
+                    <img src="/assets/images/1.jpeg" width="90" class="mr-3" alt="Avatar">
+                    <div class="media-body">
+                        <h5 class="mt-0 mb-1" th:text="${user.name}"></h5>
+                        <p><a href="/user/profile"><i class="fas fa-user-circle"></i> Profile</a></p>
+                        <a href="/user/logout">
+                            <i class="fas fa-sign-out-alt"></i>&nbsp;<span th:text="#{logout}">Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div><!-- /.card-body -->
+        </div><!-- /.card -->
+        <div class="card">
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <a href="/user/songs" class="list-group-item list-group-item-action"
+                       th:classappend="${title == 'Songs' ? 'active' : ''}"
+                       th:text="#{title.songs}">Songs</a>
+                </div>
+            </div><!-- /.card-body -->
+        </div><!-- /.card -->
+    </div>
+        <div class="col-md-9">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/" th:text="#{title.home}">Home</a></li>
+                </ol>
+            </nav>
+            <div class="card">
+                <div class="card-header">
+                    <h1>Profile</h1>
+                </div>
+                <div class="card-body">
+                    <p th:if="${globalMessage}" th:text="${globalMessage}"></p>
+                    <div th:if="${#fields.hasErrors('${user.*}')}" class="alert alert-danger">
+                        <ul>
+                            <li th:each="err : ${#fields.errors('${user.*}')}" th:text="${err}">Input is incorrect</li>
+                        </ul>
+                    </div>
+                    <form action="#" th:action="@{/user/profile}" th:object="${user}" method="post">
+                        <input type="hidden" th:field="*{id}">
+                        <fieldset>
+                            <div class="form-group">
+                                <label>Full name:</label>
+                                <input type="text" class="form-control" th:field="*{name}">
+                                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback">
+                                    Name
+                                    Error</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Email:</label>
+                                <input type="text" class="form-control" th:field="*{email}">
+                                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="invalid-feedback">
+                                    Email
+                                    Error</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Password:</label>
+                                <input type="password" class="form-control" th:field="*{password}"
+                                       placeholder="Password">
+                                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                                   class="invalid-feedback">
+                                    Password Error</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm Password:</label>
+                                <input type="password" class="form-control" th:field="*{confirmPassword}"
+                                       placeholder="Password">
+                                <p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"
+                                   class="invalid-feedback">Confirm Password Error</p>
+                            </div>
+                            <div class="form-group clearfix">
+                                <button type="submit" class="btn btn-primary btn-block"
+                                        th:text="#{label.navigation.registration.link}">Sign up
+                                </button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div><!-- /.card-body -->
+            </div><!-- /.card -->
+        </div><!-- /.col-md-9 -->
+    </div><!-- /.row -->
+</main>
+</body>
+</html>

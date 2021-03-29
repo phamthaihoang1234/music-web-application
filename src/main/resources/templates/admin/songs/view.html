@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{fragments/layout-admin :: layout (~{::main}, ${title})}">
+<body>
+<main role="main" class="pb-3">
+    <div class="row">
+        <div class="col-md-3" th:replace="~{fragments/layout-nav :: admin}"></div>
+        <div class="col-md-9">
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin" th:text="#{title.dashboard}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/admin/categories" th:text="#{title.songs.view}">Song
+                        Detail</a>
+                    </li>
+                </ol>
+            </nav>
+            <div class="card">
+                <div class="card-header">
+                    <span th:text="${title}">Song Detail</span>
+                    <a href="/admin/songs" class="btn btn-secondary btn-sm float-right"
+                       th:text="#{button.index}">Back</a>
+                </div>
+                <div class="card-body">
+                    <!--                    <th:block th:if="${message}" th:utext="${message}"></th:block>-->
+                    <!--                    <div th:if="${#fields.hasErrors('${song.*}')}" class="alert alert-danger">-->
+                    <!--                        <ul>-->
+                    <!--                            <li th:each="err : ${#fields.errors('${category.*}')}" th:text="${err}">Input is incorrect-->
+                    <!--                            </li>-->
+                    <!--                        </ul>-->
+                    <!--                    </div>-->
+                    <form th:object="${song}" method="post" novalidate="novalidate" enctype="multipart/form-data">
+                        <table class="table table-striped table-hover">
+                            <tr>
+                                <td>Id</td>
+                                <td type="text" th:text="${song.id}"></td>
+                            </tr>
+                            <tr>
+                                <td>Name</td>
+                                <td type="text" th:text="${song.name}"></td>
+                            </tr>
+                            <tr>
+                                <td>Image</td>
+                                <td><img th:src="@{${'/files/' + song.image}}" width="85px"
+                                        class="img-fluid img-thumbnail"></td>
+                            </tr>
+                            <tr>
+                                <td>Singer</td>
+                                <td type="text" th:text="${song.singer.name}"></td>
+                            </tr>
+                            <tr>
+                                <td>Album</td>
+                                <td>
+                                    <th:block th:each="album : ${song.albums}">
+                                        <small th:text="${album.name}" class="badge badge-dark"></small>
+                                    </th:block>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Lyric</td>
+                                <td type="text" th:utext="${song.lyric}"></td>
+                            </tr>
+                            <tr>
+                                <td>Create</td>
+                                <td type="text" th:text="${song.createAt}"></td>
+                            </tr>
+                        </table>
+                    </form>
+                </div><!-- /.card-body -->
+            </div><!-- /.card -->
+        </div><!-- /.col-md-9 -->
+    </div><!-- /.row -->
+</main>
+<footer th:replace="album/layout :: footer"></footer>
+</body>
+</html>

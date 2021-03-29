@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{fragments/layout-admin :: layout (~{::main}, 'singers')}">
+<head>
+    <title>Edit Singer :: AnhNBT</title>
+</head>
+<body>
+<main role="main" class="pb-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="/admin/singers">Singers</a></li>
+        </ol>
+    </nav>
+    <div class="card">
+        <div class="card-header clearfix">
+            <span>Edit Singers</span>
+            <a href="/admin/singers" class="btn btn-link btn-sm float-right">Back</a>
+        </div>
+        <div class="alert alert-primary" th:if="${message}" th:text="${message}"></div>
+
+        <div class="card-body">
+            <form th:action="@{/admin/singers/edit-singer}" th:object="${singer}" method="post"
+                  enctype="multipart/form-data">
+                <input type="hidden" th:field="*{id}">
+                <input type="hidden" th:field="*{createdAt}">
+                <div class="row form-group">
+                    <label class="col-form-label col-md-2">Singer Name<span
+                            class="text-danger">*</span>:</label>
+                    <div class="col-md-10">
+                        <input type="text" th:field="*{name}" class="form-control"
+                               th:classappend="${#fields.hasErrors('name')}? 'is-invalid'">
+                        <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback">Singer Name
+                            Error</p>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <label class="col-form-label col-md-2">Description<span
+                            class="text-danger">*</span>:
+                    </label>
+                    <div class="col-md-10">
+                        <textarea type="text" th:field="*{description}" class="form-control"></textarea>
+
+                    </div>
+
+                </div>
+
+                <div class="row form-group">
+                    <label class="col-form-label col-md-2">Avatar:</label>
+                    <div class="col-md-10">
+                        <img th:src="'/files/' + ${singer.avatarURL}" th:alt="${singer.name}" class="img-thumbnail mb-2" width="85">
+                        <input type="file" th:field="*{imageData}" class="form-control"
+                               th:classappend="${#fields.hasErrors('imageData')}? 'is-invalid'">
+                        <input type="hidden" th:field="*{avatarURL}">
+                        <p th:if="${#fields.hasErrors('imageData')}" th:errors="*{imageData}" class="invalid-feedback">
+                            Image
+                            Error</p>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <label class="col-form-label col-md-2">Cover:</label>
+                    <div class="col-md-10">
+                        <img th:src="'/files/' + ${singer.coverURL}" th:alt="${singer.name}" class="img-thumbnail mb-2" width="120">
+                        <input type="file" th:field="*{coverFile}" class="form-control"
+                               th:classappend="${#fields.hasErrors('coverFile')}? 'is-invalid'">
+                        <input type="hidden" th:field="*{coverURL}">
+                        <p th:if="${#fields.hasErrors('coverFile')}" th:errors="*{coverFile}" class="invalid-feedback">
+                            Image
+                            Error</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="/admin/singers" class="btn btn-link">Cancel</a>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+</main>
+</body>
+
+</html>

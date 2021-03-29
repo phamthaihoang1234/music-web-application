@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{fragments/layout-web :: layout (~{::main}, 'Page Not Found')}">
+<head>
+    <title>Page Not Found</title>
+</head>
+<body>
+<main role="main" class="pb-3">
+    <div class="card">
+        <div class="card-header"><h1>Oops!</h1></div>
+        <div class="card-body text-center">
+            <div class="media">
+                <div class="media-body">
+                    <h2 class="mt-0 mb-1 display-1">404</h2>
+                    <p>Không tìm thấy đường dẫn này</p>
+                    <p><a href="/" th:href="@{/}" class="btn btn-primary">Back to Home Page</a></p>
+                </div>
+                <img src="/assets/images/icon-error.png" class="ml-3" alt="Icon Error">
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

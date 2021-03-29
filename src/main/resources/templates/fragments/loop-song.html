@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul class="list-unstyled" th:fragment="loop (songs)">
+    <li class="media border-bottom py-2 d-flex align-items-center" th:each="song : ${songs}">
+        <div class="position-relative">
+            <a th:href="@{/music/{id}(id=${song.id})}">
+                <img th:src="'/files/' + ${song.image}" class="mr-3 rounded" width="85" alt="...">
+            </a>
+            <img src="./assets/images/playing-s.gif" class="position-absolute" style="bottom: 5px; left: 5px;"
+                 alt="Playing">
+        </div>
+        <div class="media-body">
+            <h5><a class="mt-0 mb-1 font-weight-bold text-dark" th:href="@{/music/{id}(id=${song.id})}" th:text="${song.name}"></a></h5>
+            <a class="text-muted" th:href="@{/singer/{id}(id=${song.singer.id})}" th:text="${song.singer.name}"></a>
+        </div>
+        <a th:href="@{/music/{id}(id=${song.id})}" class="px-2 py-1 mr-2 bg-success text-white" title="Play"><i
+                class="fas fa-play"></i></a>
+        <button type="button" th:onclick="|likeBtn(this, ${song.id})|" class="px-2 py-1 btn btn-danger text-white" title="Thích"><i class="far fa-heart"></i> <span th:text="${song.getLikeCount()}"></span></button>
+    </li>
+</ul>
+<ul class="list-unstyled" th:fragment="loopBXH (songs)">
+    <li class="media border-bottom py-2 d-flex align-items-center" th:each="song, rowStat : ${songs}">
+        <div class="position-relative">
+            <a th:href="@{/music/{id}(id=${song.id})}">
+                <img th:src="'/files/' + ${song.image}" class="mr-3 rounded" width="85" alt="...">
+            </a>
+            <small class="position-absolute badge badge-dark text-white" style="bottom: 5px; left: 5px;" th:utext="'<i class=\'fas fa-eye\'></i> ' + ${song.views}">
+            </small>
+        </div>
+        <div class="media-body">
+            <h5><a class="mt-0 mb-1 font-weight-bold text-dark" th:href="@{/music/{id}(id=${song.id})}" th:text="${song.name}"></a></h5>
+            <a class="text-muted" th:href="@{/singer/{id}(id=${song.singer.id})}" th:text="${song.singer.name}"></a>
+        </div>
+        <div class="display-4 text-danger" th:text="${rowStat.count}"></div>
+    </li>
+</ul>
+</body>
+</html>

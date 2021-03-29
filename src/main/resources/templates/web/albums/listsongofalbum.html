@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="~{fragments/layout-web :: layout (~{::main}, 'home')}">
+<head>
+    <title>List of songs</title>
+</head>
+<body>
+<main role="main" class="pb-3">
+    <div class="row">
+        <!--- menu left -->
+        <div class="col-md-3 d-none d-md-block">
+<!--                        <div class="card mb-2">-->
+<!--                            <div class="card-header font-weight-bold bg-dark text-white">-->
+<!--                                Thể loại âm nhạc-->
+<!--                            </div>-->
+<!--                            <div class="card-body p-0">-->
+<!--                                <div class="list-group list-group-flush" th:each="category : ${categories}">-->
+<!--                                    <a th:href="@{/category/{id}(id=${category.id})}" class="list-group-item list-group-item-action" th:text="${category.name}"></a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="card">
+                            <div class="card-header font-weight-bold bg-dark text-white">
+                                Album
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush" th:each="album : ${albums}">
+                                    <a th:href="@{/album/{id}(id=${album.id})}" class="list-group-item list-group-item-action" th:text="${album.name}"></a>
+                                </div>
+                            </div>
+                        </div>
+<!--            <div class="card">-->
+<!--                <div class="card-header font-weight-bold bg-dark text-white">-->
+<!--                    Singer-->
+<!--                </div>-->
+<!--                <div class="card-body p-0">-->
+<!--                    <div class="list-group list-group-flush" th:each="singer : ${singers}">-->
+<!--                        <a th:href="@{/singer/{id}(id=${singer.id})}" class="list-group-item list-group-item-action" th:text="${singer.name}"></a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+        </div>
+        <!-- Moi cap nhat -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-3">
+<!--                <div class="card-header" th:each="album :${albums}">-->
+<!--                    <h1 th:text="${album.name}"></h1>-->
+<!--                </div>-->
+                <div class="card-body">
+                    <ul class="list-unstyled" th:each="song:${songs}">
+                        <li class="media border-bottom py-2">
+                            <div class="position-relative">
+                                <a th:href="@{/music/{id}(id=${song.id})}">
+                                    <img th:src="'/files/' + ${song.image}" class="mr-3 rounded" width="85" alt="...">
+                                    <!--                                     thêm hình mắt hien thi view-->
+                                    <small class="position-absolute badge badge-dark text-white " style="bottom: 2px; right: 20px;" th:utext="'<i class=\'fas fa-eye\'></i> ' + ${song.views}">
+                                    </small>
+                                </a>
+                                <img src="/assets/images/playing-s.gif" class="position-absolute" style="bottom: 5px; left: 5px;" alt="Playing">
+                            </div>
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1" th:text="${song.name}"></h5>
+<!--                                <div th:each="album :${song.getAlbums()}">-->
+<!--                                    <span class="badge badge-danger" th:text="${album.name}"></span>-->
+<!--                                </div>-->
+
+                            </div>
+                            <a th:href="@{/music/{id}(id=${song.id})}" class="px-2 py-1 mr-2 bg-success text-white" title="Play"><i class="fas fa-play"></i></a>
+                            <button type="button" th:onclick="|likeBtn(this, ${song.id})|" class="px-2 py-1 bg-danger text-white" song-id="1" title="Thích"><i class="far fa-heart"></i><span th:text="${song.getLikeCount()}"></span></button>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    Bảng xếp hạng
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons" id="btn-group">
+                        <button th:onclick="|bxh(1,this)|" type="button" class="btn btn-light active" data-toggle="button"
+                                aria-pressed="false">US/UK
+                        </button>
+                        <button th:onclick="|bxh(2,this)|" type="button" class="btn btn-light" data-toggle="button"
+                                aria-pressed="false">Việt Nam
+                        </button>
+                        <button th:onclick="|bxh(3,this)|" type="button" class="btn btn-light" data-toggle="button"
+                                aria-pressed="false">Châu Á
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled" th:each="song, rowStat :${bxh}">
+                        <li class="media border-bottom py-2">
+                            <div class="position-relative">
+                                <a th:href="@{/music/{id}(id=${song.id})}">
+                                    <img th:src="'/files/' + ${song.image}" class="mr-3 rounded" width="85" alt="...">
+                                </a>
+                                <small class="position-absolute badge badge-dark text-white" style="bottom: 5px; left: 5px;" th:utext="'<i class=\'fas fa-eye\'></i> ' + ${song.views}">
+                                </small>
+                            </div>
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1" th:text="${song.name}"></h5>
+                                <small th:text="${song.singer.name}"></small>
+                            </div>
+                            <div class="display-4 text-danger" th:text="${rowStat.count}"></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
